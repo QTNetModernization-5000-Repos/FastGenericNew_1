@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Library Properties -->
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net461;net48</TargetFrameworks>
+		<LangVersion>9.0</LangVersion>
+		<ImplicitUsings>disabled</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsTrimmable>true</IsTrimmable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>_generated</CompilerGeneratedFilesOutputPath>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="$(CompilerGeneratedFilesOutputPath)\**" />
+		<None Include="$(CompilerGeneratedFilesOutputPath)\**" />
+	</ItemGroup>
+
+	<!-- FastGenericNew Properties -->
+	<PropertyGroup>
+		<FastNew_MaxParameterCount>18</FastNew_MaxParameterCount>
+		<FastNew_ForceFastNewDelegate>false</FastNew_ForceFastNewDelegate>
+		<FastNew_MultiThreadedGeneration>true</FastNew_MultiThreadedGeneration>
+		<FastNew_PrettyOutput>true</FastNew_PrettyOutput>
+		<FastNew_OutputGenerationInfo>true</FastNew_OutputGenerationInfo>
+		<FastNew_PublicFastNew>true</FastNew_PublicFastNew>
+	</PropertyGroup>
+
+	<!-- Nuget Package Properties-->
+	<PropertyGroup>
+		<PackageId>FastGenericNew</PackageId>
+		<PackageTagsPostfix>Generated</PackageTagsPostfix>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTagsPostfix>, Generated</PackageTagsPostfix>
+		<AnalysisLevel>preview</AnalysisLevel>
+	</PropertyGroup>
+
+	<!-- Dependencies for TargetFrameworks doesn't compatible to 'NET 5.0' -->
+	<ItemGroup Condition=" !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net5.0')) ">
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+	</ItemGroup>
+	<!-- Dependencies for .NET Standard 2.0 -->
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+	</ItemGroup>
+
+	<!-- Reference to Source Generator-->
+	<ItemGroup>
+		<ProjectReference Include="..\FastGenericNew.SourceGenerator\FastGenericNew.SourceGenerator.csproj">
+			<OutputItemType>Analyzer</OutputItemType>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="_generated\FastGenericNew.SourceGenerator\FastGenericNew.SourceGenerator.Generator\" />
+	</ItemGroup>
+
+	<!-- Imports -->
+	<Import Project="../FastGenericNew.Shared.props" />
+	<Import Project="../FastGenericNew.SourceGenerator/FastGenericNew.SourceGenerator.props" />
+</Project>

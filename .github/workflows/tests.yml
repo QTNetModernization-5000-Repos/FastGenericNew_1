@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: 
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+    paths-ignore: 
+      - 'README.md'
+  workflow_dispatch:
+
+jobs:
+  Tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        configuration: [Debug, Release]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4.2.0
+      with:
+        dotnet-version: | 
+          3.1.x
+          5.0.x
+          6.0.x
+          7.0.x
+          8.0.x
+          9.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build -c ${{ matrix.configuration }} --no-restore -p:NoWarn=CS1591
+    - name: Test
+      run: dotnet test -c ${{ matrix.configuration }} --no-build --no-restore --verbosity normal

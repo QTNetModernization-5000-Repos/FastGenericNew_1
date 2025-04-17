@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Library Properties -->
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>11.0</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+		<DevelopmentDependency>true</DevelopmentDependency>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>_generated</CompilerGeneratedFilesOutputPath>
+		<SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="$(CompilerGeneratedFilesOutputPath)\**" />
+		<None Include="$(CompilerGeneratedFilesOutputPath)\**" />
+	</ItemGroup>
+
+
+	<!-- The following libraries include the source generator interfaces and types we need -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\FastGenericNew.SourceGenerator.InternalGenerator\FastGenericNew.SourceGenerator.InternalGenerator.csproj">
+			<OutputItemType>Analyzer</OutputItemType>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+		<AdditionalFiles Include="FastGenericNew.SourceGenerator.props" />
+	</ItemGroup>
+
+	<!-- Nuget Package Properties-->
+	<PropertyGroup>
+		<PackageId>FastGenericNew.SourceGenerator</PackageId>
+		<DescriptionPrefix>
+			Configurable Source Generator
+			Minimum requirement: .NET Standard 2.0 &amp; C# 8.0
+		</DescriptionPrefix>
+		<PackageTagsPostfix>Roslyn, DotNetAnalyzers, Analyzer, SourceGenerator, SourceGeneratorV2, IncrementalGenerator</PackageTagsPostfix>
+	</PropertyGroup>
+
+	<!-- Imports -->
+	<Import Project="../FastGenericNew.Shared.props" />
+
+	<Target Name="_AddAnalyzersToOutput">
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="$(OutputPath)\FastGenericNew.SourceGenerator.dll" PackagePath="analyzers/dotnet/cs" />
+			<TfmSpecificPackageFile Include="FastGenericNew.SourceGenerator.props" PackagePath="build" />
+			<TfmSpecificPackageFile Include="install.ps1" PackagePath="tools" />
+			<TfmSpecificPackageFile Include="uninstall.ps1" PackagePath="tools" />
+		</ItemGroup>
+	</Target>
+
+</Project>
