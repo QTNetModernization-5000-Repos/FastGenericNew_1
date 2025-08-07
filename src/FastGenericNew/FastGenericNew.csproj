@@ -57,6 +57,7 @@
 		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
+  	<PackageReference Include="Microsoft.NET.ILLink.Analyzers" Version="7.0.100-1.23401.1" />
 	  <Folder Include="_generated\FastGenericNew.SourceGenerator\FastGenericNew.SourceGenerator.Generator\" />
 	</ItemGroup>
 
